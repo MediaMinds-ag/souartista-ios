@@ -2,6 +2,7 @@
   ios_capacitor_release:
     name: iOS Capacitor Release
     max_build_duration: 60
+
     environment:
       xcode: 15.4
       node: 20
@@ -12,15 +13,18 @@
         BUNDLE_ID: "com.souartista.app"
       groups:
         - appstore_connect
-      cache:
-        cache_paths:
-          - ~/.npm
-          - ~/.cocoapods
-          - ~/Library/Caches/CocoaPods
+
+    cache:
+      cache_paths:
+        - ~/.npm
+        - ~/.cocoapods
+        - ~/Library/Caches/CocoaPods
+
     scripts:
       - name: Instalar dependências
         script: |
           npm ci
+
       - name: Preparar iOS (Capacitor)
         script: |
           npx capacitor-assets generate --ios || true
@@ -28,22 +32,26 @@
           cd ios/App
           pod install
           cd ../..
+
       - name: Assinatura automática (App Store Connect)
         script: |
-          app-store-connect fetch-signing-files "" --type IOS_APP_STORE --create
+          app-store-connect fetch-signing-files "$BUNDLE_ID" --type IOS_APP_STORE --create
           keychain add-certificates
           xcode-project use-profiles
+
       - name: Build IPA
         script: |
-          xcode-project build-ipa --workspace "" --scheme ""
+          xcode-project build-ipa --workspace "$XCODE_WORKSPACE" --scheme "$XCODE_SCHEME"
+
     artifacts:
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
+
     publishing:
       app_store_connect:
-        api_key: 
-        issuer_id: 
-        key_id: 
+        api_key: $APP_STORE_CONNECT_PRIVATE_KEY
+        issuer_id: $APP_STORE_CONNECT_ISSUER_ID
+        key_id: $APP_STORE_CONNECT_KEY_IDENTIFIER
         submit_to_testflight: true
         beta_groups:
           - "Internal Testers"

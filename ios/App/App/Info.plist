@@ -5,7 +5,7 @@
 	<key>CFBundleDevelopmentRegion</key>
 	<string>en</string>
 	<key>CFBundleDisplayName</key>
-        <string>Sou Artista</string>
+	<string>Sou Artista</string>
 	<key>CFBundleExecutable</key>
 	<string>$(EXECUTABLE_NAME)</string>
 	<key>CFBundleIdentifier</key>
@@ -45,5 +45,20 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<true/>
+
+	<!-- Lista de domínios permitidos pelo App-Bound (WKWebView) -->
+	<key>WKAppBoundDomains</key>
+	<array>
+		<string>studio--sou-artista.us-central1.hosted.app</string>
+		<string>checkout.monetizze.com.br</string>
+		<!-- Terceiros comuns; remova/adicione conforme seu site usa -->
+		<string>fonts.googleapis.com</string>
+		<string>fonts.gstatic.com</string>
+		<string>cdn.jsdelivr.net</string>
+		<string>static.cloudflareinsights.com</string>
+		<string>www.googletagmanager.com</string>
+		<string>www.google-analytics.com</string>
+		<string>vitals.vercel-insights.com</string>
+	</array>
 </dict>
 </plist>

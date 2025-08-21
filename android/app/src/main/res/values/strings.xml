@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">Sou Artista</string>
+    <string name="title_activity_main">Sou Artista</string>
+    <string name="package_name">com.souartista.app</string>
+    <string name="custom_url_scheme">com.souartista.app</string>
+</resources>

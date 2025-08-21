@@ -1,0 +1,7 @@
+﻿node_modules/
+build/
+dist/
+.android/
+.ios/
+**/*.keystore
+**/*.jks

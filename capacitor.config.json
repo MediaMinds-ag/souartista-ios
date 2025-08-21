@@ -1,0 +1,22 @@
+{
+  "appId": "com.souartista.app",
+  "appName": "Sou Artista",
+  "bundledWebRuntime": false,
+  "webDir": "www",
+  "server": {
+    "url": "https://studio--sou-artista.us-central1.hosted.app",
+    "cleartext": false,
+    "allowNavigation": [
+      "studio--sou-artista.us-central1.hosted.app",
+      "checkout.monetizze.com.br"
+    ]
+  },
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 1200,
+      "backgroundColor": "#0E031B",
+      "androidScaleType": "CENTER_CROP",
+      "showSpinner": false
+    }
+  }
+}

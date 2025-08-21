@@ -1,52 +1,29 @@
 ﻿workflows:
   ios_capacitor_release:
     name: iOS Capacitor Release
-    max_build_duration: 60
-
     environment:
       xcode: 15.4
-      node: 20
-      cocoapods: default
       vars:
         XCODE_WORKSPACE: "ios/App/App.xcworkspace"
         XCODE_SCHEME: "App"
         BUNDLE_ID: "com.souartista.app"
-      groups:
-        - appstore_connect
-
-    cache:
-      cache_paths:
-        - ~/.npm
-        - ~/.cocoapods
-        - ~/Library/Caches/CocoaPods
-
     scripts:
-      - name: Instalar dependências
+      - name: Install deps & sync Capacitor
         script: |
           npm ci
-
-      - name: Preparar iOS (Capacitor)
-        script: |
-          npx capacitor-assets generate --ios || true
           npx cap sync ios
-          cd ios/App
-          pod install
-          cd ../..
-
-      - name: Assinatura automática (App Store Connect)
+          cd ios/App && pod install --repo-update && cd ../..
+      - name: Fetch signing files (App Store)
         script: |
           app-store-connect fetch-signing-files "$BUNDLE_ID" --type IOS_APP_STORE --create
           keychain add-certificates
           xcode-project use-profiles
-
       - name: Build IPA
         script: |
           xcode-project build-ipa --workspace "$XCODE_WORKSPACE" --scheme "$XCODE_SCHEME"
-
     artifacts:
       - build/ios/ipa/*.ipa
       - /tmp/xcodebuild_logs/*.log
-
     publishing:
       app_store_connect:
         api_key: $APP_STORE_CONNECT_PRIVATE_KEY
@@ -55,3 +32,29 @@
         submit_to_testflight: true
         beta_groups:
           - "Internal Testers"
+
+  ios_simulator_preview:
+    name: iOS Simulator Preview (no signing)
+    environment:
+      xcode: 15.4
+    scripts:
+      - name: Install deps & sync Capacitor
+        script: |
+          npm ci
+          npx cap sync ios
+          cd ios/App && pod install --repo-update && cd ../..
+      - name: Build for iOS Simulator (no code signing)
+        script: |
+          xcodebuild -workspace ios/App/App.xcworkspace \
+            -scheme App \
+            -configuration Debug \
+            -sdk iphonesimulator \
+            -derivedDataPath build/ios-sim \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO
+      - name: Package .app for upload
+        script: |
+          APP_PATH=$(ls -d build/ios-sim/Build/Products/Debug-iphonesimulator/*.app | head -n1)
+          mkdir -p build/artifacts
+          zip -r build/artifacts/SouArtista-iphonesimulator.zip "$APP_PATH"
+    artifacts:
+      - build/artifacts/*.zip

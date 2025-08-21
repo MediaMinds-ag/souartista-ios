@@ -18,8 +18,5 @@
       "androidScaleType": "CENTER_CROP",
       "showSpinner": false
     }
-  },
-  "ios": {
-    "limitsNavigationsToAppBoundDomains": false
   }
 }
